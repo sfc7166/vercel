@@ -1,6 +1,27 @@
 const model = require('../model/product')
 const Product = model.Product
+const ejs = require('ejs')
+const path = require('path')
 
+//view 
+exports.getProductsSSR = async (req, res) => {
+    try {
+        const doc = await Product.find()
+        ejs.renderFile(path.resolve(__dirname, '../pages/index.ejs'), { products: Product }, function (err, str) {
+            // console.log(doc)
+            res.send(str)
+        })
+
+    }
+    catch (err) {
+        console.log(err)
+        res.json({ error: err.message })
+    }
+}
+
+
+
+//createProduct
 exports.createProduct = async (req, res) => {
     const product = new Product(req.body)
     try {
@@ -14,6 +35,7 @@ exports.createProduct = async (req, res) => {
     }
 }
 
+//getAllProducts
 exports.getProducts = async (req, res) => {
     try {
         const doc = await Product.find()
@@ -26,6 +48,7 @@ exports.getProducts = async (req, res) => {
     }
 }
 
+//getProduct
 exports.getProduct = async (req, res) => {
     const id = req.params.id
     try {
@@ -39,6 +62,7 @@ exports.getProduct = async (req, res) => {
     }
 }
 
+//replaceProduct
 exports.replaceProduct = async (req, res) => {
     const id = req.params.id
     try {
@@ -52,6 +76,7 @@ exports.replaceProduct = async (req, res) => {
     }
 }
 
+//updateProduct
 exports.updateProduct = async (req, res) => {
     const id = req.params.id
     try {
@@ -65,6 +90,7 @@ exports.updateProduct = async (req, res) => {
     }
 }
 
+//deleteProduct
 exports.deleteProduct = async (req, res) => {
     const id = req.params.id
     try {
