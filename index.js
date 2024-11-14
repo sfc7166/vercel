@@ -326,7 +326,7 @@ const mongoose = require('mongoose')
 const server = express()
 const path = require('path')
 const productRouter = require('./Routes/product')
-const userRouter = require('./routes/user')
+const userRouter = require('./Routes/user')
 console.log('env', process.env.DB_PASSWORD)
 
 
