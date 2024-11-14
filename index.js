@@ -325,7 +325,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const server = express()
 const path = require('path')
-const productRouter = require('./routes/product')
+const productRouter = require('./Routes/product')
 const userRouter = require('./routes/user')
 console.log('env', process.env.DB_PASSWORD)
 
