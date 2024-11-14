@@ -20,6 +20,21 @@ exports.getProductsSSR = async (req, res) => {
 }
 
 
+exports.getAddForm = async (req, res) => {
+    try {
+        ejs.renderFile(path.resolve(__dirname, '../pages/add.ejs'), function (err, str) {
+            // console.log(doc)
+            res.send(str)
+        })
+
+    }
+    catch (err) {
+        console.log(err)
+        res.json({ error: err.message })
+    }
+}
+
+
 
 //createProduct
 exports.createProduct = async (req, res) => {
