@@ -327,6 +327,12 @@ const server = express()
 const path = require('path')
 const productRouter = require('./Routes/product')
 const userRouter = require('./Routes/user')
+const jwt = require('jsonwebtoken')
+const authRouter = require('./Routes/auth')
+const fs = require('fs')
+const publicKey = fs.readFileSync(path.resolve(__dirname, './public.key'), 'utf-8')
+
+
 console.log('env', process.env.DB_PASSWORD)
 
 
@@ -342,13 +348,34 @@ async function main() {
 
 
 //bodyParser
+const auth = (req, res, next) => {
+
+    try {
+        const token = req.get('Authorization').split('Bearer ')[1]
+        console.log(token)
+        var decoded = jwt.verify(token, publicKey)
+        if (decoded.email) {
+            next()
+        }
+        else {
+            res.sendStatus(401)
+        }
+    }
+    catch (err) {
+        res.sendStatus(401)
+    }
+
+}
+
+
 server.use(cors())
 server.use(express.json())
 server.use(express.urlencoded())
 server.use(morgan('default'))
 server.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR)))
-server.use('/products', productRouter.router)
-server.use('/users', userRouter.router)
+server.use('/auth', authRouter.router)
+server.use('/products', auth, productRouter.router)
+server.use('/users', auth, userRouter.router)
 server.use('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 })

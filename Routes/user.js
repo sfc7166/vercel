@@ -4,11 +4,10 @@ const userController = require('../Controller/user')
 const router = express.Router()
 
 router
-    .get('/', userController.getusers)
-    .get('/:id', userController.getuser)
-    .post('/', userController.createuser)
-    .put('/:id', userController.replaceuser)
-    .patch('/:id', userController.updateuser)
-    .delete('/:id', userController.deleteuser)
+    .get('/', userController.getUsers)
+    .get('/:id', userController.getUser)
+    .put('/:id', userController.replaceUser)
+    .patch('/:id', userController.updateUser)
+    .delete('/:id', userController.deleteUser)
 
 exports.router = router
