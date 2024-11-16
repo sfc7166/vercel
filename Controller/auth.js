@@ -38,26 +38,36 @@ exports.signUp = async (req, res) => {
 //userLogin
 exports.login = async (req, res) => {
     try {
+        // Find the user by email
         const doc = await User.findOne({ email: req.body.email })
+
+        // Check if the user exists
         if (!doc) {
             return res.status(401).json({ error: 'User not found' })
         }
+
+        // Check if the password is correct
         const isAuth = bcrypt.compareSync(req.body.password, doc.password)
+
         if (isAuth) {
-            var token = jwt.sign({ email: req.body.email }, privateKey, {
+            // Create a JWT token if authentication is successful
+            const token = jwt.sign({ email: req.body.email }, privateKey, {
                 algorithm: 'RS256',
-            });
-            doc.token = token
-            await doc.save(() => {
-                res.json({ token })
             })
 
-        } else {
-            res.sendStatus(401)
+            // Save the token in the user document (optional if you store the token)
+            doc.token = token
+            await doc.save()
 
+            // Send the token in the response
+            res.json({ token })
+        } else {
+            // If authentication fails, return 401 Unauthorized
+            res.status(401).json({ error: 'Invalid password' })
         }
     } catch (err) {
-        res.status(401).json(err)
+        console.error("Login error:", err)  // Log the error for debugging
+        res.status(500).json({ error: 'Something went wrong, please try again' })
     }
 }
 
