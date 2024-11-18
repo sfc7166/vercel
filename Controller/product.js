@@ -53,15 +53,47 @@ exports.createProduct = async (req, res) => {
 //getAllProducts
 exports.getProducts = async (req, res) => {
     try {
-        const doc = await Product.find()
-        console.log(doc)
-        res.json({ products: doc })
+        let query = Product.find();
+
+        // Apply sorting if sort and field parameters are present
+        if (req.query.sort && req.query.field) {
+            const sortField = req.query.field; // Field to sort by
+            const sortValue = parseInt(req.query.sort); // Ascending (1) or Descending (-1)
+
+            // Validate sortValue
+            if (isNaN(sortValue) || (sortValue !== 1 && sortValue !== -1)) {
+                throw new Error("Invalid sort value. Use 1 for ascending or -1 for descending.");
+            }
+
+            // Dynamic sorting
+            const sortObject = {};
+            sortObject[sortField] = sortValue;
+            query = query.sort(sortObject);
+        }
+
+        // Apply limit if the limit parameter is present
+        if (req.query.limit) {
+            const limitValue = parseInt(req.query.limit);
+
+            // Validate limitValue
+            if (isNaN(limitValue) || limitValue <= 0) {
+                throw new Error("Invalid limit value. Use a positive integer.");
+            }
+
+            query = query.limit(limitValue);
+        }
+
+        const products = await query.exec();
+        res.json({ products });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ error: err.message });
     }
-    catch (err) {
-        console.log(err)
-        res.json({ error: err.message })
-    }
-}
+};
+
+
+
+
 
 //getProduct
 exports.getProduct = async (req, res) => {

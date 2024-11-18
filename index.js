@@ -319,11 +319,14 @@
 //node 4
 
 require('dotenv').config()
+require('./customEvents.js')
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const server = express()
+const app = require('http').createServer(server)
+const io = require('socket.io')(app)
 const path = require('path')
 const productRouter = require('./Routes/product')
 const userRouter = require('./Routes/user')
@@ -331,6 +334,7 @@ const jwt = require('jsonwebtoken')
 const authRouter = require('./Routes/auth')
 const fs = require('fs')
 const publicKey = fs.readFileSync(path.resolve(__dirname, './public.key'), 'utf-8')
+
 
 
 console.log('env', process.env.DB_PASSWORD)
@@ -367,6 +371,9 @@ const auth = (req, res, next) => {
 
 }
 
+io.on('connection', (socket) => {
+    console.log('socket', socket.id)
+})
 
 server.use(cors())
 server.use(express.json())
@@ -374,13 +381,15 @@ server.use(express.urlencoded())
 server.use(morgan('default'))
 server.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR)))
 server.use('/auth', authRouter.router)
-server.use('/products', auth, productRouter.router)
+server.use('/products', productRouter.router)
 server.use('/users', auth, userRouter.router)
 server.use('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 })
 
 
-server.listen(process.env.PORT, () => {
+
+
+app.listen(process.env.PORT, () => {
     console.log('server started')
 })

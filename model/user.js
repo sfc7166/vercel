@@ -1,9 +1,11 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const mongoose = require('mongoose')
+const { Schema } = mongoose
+mongoose.set('strictPopulate', false)
 
 const userSchema = new Schema({
     firstName: { type: String, required: true },
     lastName: String,
+    cart: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     email: {
         type: String,
         unique: true,
@@ -17,6 +19,6 @@ const userSchema = new Schema({
     },
     password: { type: String, minLength: 6, required: true },
     token: String,
-});
+})
 
 exports.User = mongoose.model('User', userSchema);

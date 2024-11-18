@@ -21,7 +21,7 @@ exports.getUsers = async (req, res) => {
 exports.getUser = async (req, res) => {
     const id = req.params.id
     try {
-        const doc = await User.findById(id)
+        const doc = await User.findById(id).populate('cart')
         console.log(doc)
         res.json({ User: doc })
     }
