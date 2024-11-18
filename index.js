@@ -317,9 +317,8 @@
 
 
 //node 4
-
-require('dotenv').config()
 require('./customEvents.js')
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -334,9 +333,6 @@ const jwt = require('jsonwebtoken')
 const authRouter = require('./Routes/auth')
 const fs = require('fs')
 const publicKey = fs.readFileSync(path.resolve(__dirname, './public.key'), 'utf-8')
-
-
-
 console.log('env', process.env.DB_PASSWORD)
 
 
@@ -373,6 +369,13 @@ const auth = (req, res, next) => {
 
 io.on('connection', (socket) => {
     console.log('socket', socket.id)
+
+    socket.on('msg', (data) => {
+        console.log({ data })
+    })
+    setTimeout(() => {
+        socket.emit('serverMsg', { server: 'hi' })
+    }, 4000)
 })
 
 server.use(cors())
@@ -381,11 +384,12 @@ server.use(express.urlencoded())
 server.use(morgan('default'))
 server.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR)))
 server.use('/auth', authRouter.router)
-server.use('/products', productRouter.router)
+server.use('/products', auth, productRouter.router)
 server.use('/users', auth, userRouter.router)
 server.use('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 })
+
 
 
 

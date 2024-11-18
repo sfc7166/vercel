@@ -1,8 +1,13 @@
-<script scr="/socket.io/socket.io.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     const socket = io()
     console.log('socket', socket.id)
-    socket.emit('msg', { player: 'one' })
+    setTimeout(() => {
+        socket.emit('msg', { player: 'one' })
+    }, 6000)
+    socket.on('serverMsg', (data) => {
+        console.log({ data })
+    })
 </script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />

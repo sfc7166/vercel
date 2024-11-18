@@ -1,12 +1,14 @@
 const EventEmitter = require('events')
 const fs = require('fs')
-const rr = fs.createReadStream('./data.json');
+const rr = fs.createReadStream('./data.json')
+
 
 rr.on('data', (data) => {
-    console.log({ data })
+    // console.log({ data })
 })
+
 rr.on('end', (data) => {
-    console.log({ data })
+    // console.log({ data })
 })
 
 
