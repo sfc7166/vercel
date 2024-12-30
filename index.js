@@ -223,12 +223,12 @@
 
 // const express = require('express');
 // const server = express();
-// // const data = require('./data.json');
-// // const products = data.products;
+// const data = require('./data.json');
+// const products = data.products;
 
-// // server.get('/', (req, res) => {
-// //     res.json(products);
-// // })
+// server.get('/', (req, res) => {
+//     res.json(products);
+// })
 
 // server.get('/', (req, res) => {
 //     res.json({ type: 'GET' })
@@ -317,83 +317,81 @@
 
 
 //node 4
-require('./customEvents.js')
-require('dotenv').config()
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const mongoose = require('mongoose')
-const server = express()
-const app = require('http').createServer(server)
-const io = require('socket.io')(app)
-const path = require('path')
-const productRouter = require('./Routes/product')
-const userRouter = require('./Routes/user')
-const jwt = require('jsonwebtoken')
-const authRouter = require('./Routes/auth')
-const fs = require('fs')
-const publicKey = fs.readFileSync(path.resolve(__dirname, './public.key'), 'utf-8')
-console.log('env', process.env.DB_PASSWORD)
+// require('./customEvents.js')
+// require('dotenv').config()
+// const express = require('express')
+// const morgan = require('morgan')
+// const cors = require('cors')
+// const mongoose = require('mongoose')
+// const server = express()
+// const app = require('http').createServer(server)
+// const io = require('socket.io')(app)
+// const path = require('path')
+// const productRouter = require('./Routes/product')
+// const userRouter = require('./Routes/user')
+// const jwt = require('jsonwebtoken')
+// const authRouter = require('./Routes/auth')
+// const fs = require('fs')
+// const publicKey = fs.readFileSync(path.resolve(__dirname, './public.key'), 'utf-8')
+// console.log('env', process.env.DB_PASSWORD)
 
 
 
-//db connection
-main().catch(err => console.log(err))
+// //db connection
+// main().catch(err => console.log(err))
 
-async function main() {
-    await mongoose.connect(process.env.MONGO_URL)
-    console.log('database connected')
-}
-
-
-
-//bodyParser
-const auth = (req, res, next) => {
-
-    try {
-        const token = req.get('Authorization').split('Bearer ')[1]
-        console.log(token)
-        var decoded = jwt.verify(token, publicKey)
-        if (decoded.email) {
-            next()
-        }
-        else {
-            res.sendStatus(401)
-        }
-    }
-    catch (err) {
-        res.sendStatus(401)
-    }
-
-}
-
-io.on('connection', (socket) => {
-    console.log('socket', socket.id)
-
-    socket.on('msg', (data) => {
-        console.log({ data })
-    })
-    setTimeout(() => {
-        socket.emit('serverMsg', { server: 'hi' })
-    }, 4000)
-})
-
-server.use(cors())
-server.use(express.json())
-server.use(express.urlencoded())
-server.use(morgan('default'))
-server.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR)))
-server.use('/auth', authRouter.router)
-server.use('/products', auth, productRouter.router)
-server.use('/users', auth, userRouter.router)
-server.use('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
-})
+// async function main() {
+//     await mongoose.connect(process.env.MONGO_URL)
+//     console.log('database connected')
+// }
 
 
 
+// //bodyParser
+// const auth = (req, res, next) => {
+
+//     try {
+//         const token = req.get('Authorization').split('Bearer ')[1]
+//         console.log(token)
+//         var decoded = jwt.verify(token, publicKey)
+//         if (decoded.email) {
+//             next()
+//         }
+//         else {
+//             res.sendStatus(401)
+//         }
+//     }
+//     catch (err) {
+//         res.sendStatus(401)
+//     }
+
+// }
+
+// io.on('connection', (socket) => {
+//     console.log('socket', socket.id)
+
+//     socket.on('msg', (data) => {
+//         console.log({ data })
+//     })
+//     setTimeout(() => {
+//         socket.emit('serverMsg', { server: 'hi' })
+//     }, 4000)
+// })
+
+// server.use(cors())
+// server.use(express.json())
+// server.use(express.urlencoded())
+// server.use(morgan('default'))
+// server.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR)))
+// server.use('/auth', authRouter.router)
+// server.use('/products', auth, productRouter.router)
+// server.use('/users', auth, userRouter.router)
+// server.use('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+// })
 
 
-app.listen(process.env.PORT, () => {
-    console.log('server started')
-})
+
+// app.listen(process.env.PORT, () => {
+//     console.log('server started')
+// })
